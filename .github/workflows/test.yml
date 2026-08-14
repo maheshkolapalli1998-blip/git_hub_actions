@@ -3,18 +3,21 @@ name: Terraform Deploy
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:   # Manual trigger button
-
-
+  workflow_dispatch:
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::905418218028:role/OIDC_Role
+          aws-region: us-east-1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -30,13 +33,6 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-
-        - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::905418218028:role/OIDC_Role
-          aws-region: us-east-1
-
 
 
 ##### condition based after plan approval only apply #######
